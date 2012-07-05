@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:webflow="http://www.springframework.org/schema/webflow-config"
+	xmlns:faces="http://www.springframework.org/schema/faces" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+           http://www.springframework.org/schema/webflow-config http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.3.xsd
+           http://www.springframework.org/schema/faces http://www.springframework.org/schema/faces/spring-faces-2.2.xsd
+           http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd">
+
+	<bean class="org.springframework.webflow.scope.ScopeRegistrar" />
+
+	<!-- Executes flows: the central entry point into the Spring Web Flow system -->
+	<webflow:flow-executor id="flowExecutor">
+		<webflow:flow-execution-listeners>
+			<webflow:listener ref="securityListener" />
+			<webflow:listener ref="facesContextListener" />
+			<webflow:listener ref="hibernateFlowExecutionListener" />
+		</webflow:flow-execution-listeners>
+	</webflow:flow-executor>
+
+	<!-- The registry of executable flow definitions -->
+	<webflow:flow-registry id="flowRegistry"
+		flow-builder-services="facesFlowBuilderServices" base-path="/WEB-INF/flows">
+		<webflow:flow-location-pattern value="**/*flow.xml"/>
+	</webflow:flow-registry>
+
+	<!-- Configures the Spring Web Flow JSF integration -->
+	<faces:flow-builder-services id="facesFlowBuilderServices" development="true"/>
+
+	<!-- A listener to apply Spring Security authorities -->
+	<bean id="securityListener"
+		class="org.springframework.webflow.security.SecurityFlowExecutionListener" />
+
+	<!-- A listener maintain one FacesContext instance per Web Flow request. -->
+	<bean id="facesContextListener"
+		class="org.springframework.faces.webflow.FlowFacesContextLifecycleListener" />	
+
+	<!-- Installs a listener that manages Hibernate persistence contexts for 
+		flows that require them -->
+	<bean id="hibernateFlowExecutionListener"
+		class="${package}.webflow.Hibernate4FlowExecutionListener">
+		<constructor-arg ref="sessionFactory" />
+		<constructor-arg ref="transactionManager" />
+	</bean>
+
+	<!--In a JSF 2 environment you'll also need this Spring MVC related configuration: -->
+
+	<!--The JsfFlowHandlerAdapter is a replacement for the FlowHandlerAdapter 
+		normally used with Web Flow. This adapter initializes itself with a JsfAjaxHandler 
+		instead of the SpringJavaScriptAjaxHandler previously used with Spring Faces 
+		components. -->
+	<bean class="org.springframework.faces.webflow.JsfFlowHandlerAdapter">
+		<property name="flowExecutor" ref="flowExecutor" />
+	</bean>
+
+	<!-- Maps request paths to flows in the flowRegistry; e.g. a path of /hotels/booking 
+		looks for a flow with id "hotels/booking" -->
+	<bean class="org.springframework.webflow.mvc.servlet.FlowHandlerMapping">
+		<property name="order" value="2" />
+		<property name="flowRegistry" ref="flowRegistry" />
+	</bean>
+
+	<!-- See https://jira.springsource.org/browse/SWF-1473 -->
+	<!-- and http://stackoverflow.com/questions/4586947/resource-handler-problems-with-jsf2-richfaces4-springmvc-webflow-swf -->
+	<faces:resources />
+
+	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basename" value="/WEB-INF/i18n/messages" />
+		<property name="defaultEncoding" value="ISO-8859-1" />
+		<property name="cacheSeconds" value="5"/>
+	</bean>
+	
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.FixedLocaleResolver">
+		<property name="defaultLocale" value="es"/>
+	</bean>
+</beans>

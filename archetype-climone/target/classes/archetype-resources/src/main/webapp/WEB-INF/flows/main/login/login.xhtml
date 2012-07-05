@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/xhtml; charset=UTF-8" />
+	<title><ui:insert name="title" />
+	</title>
+	<script type="text/javascript">
+		
+	</script>
+	<link rel="stylesheet"
+		href="${request.contextPath}/resources/css/application.css"
+		type="text/css" />
+	<ui:insert name="head" />
+</h:head>
+
+<h:body>
+
+
+	<div style="height: 128px">&nbsp;</div>
+	<p:panel style="margin-left: 25%; margin-right:25%">
+		<form name="f"
+			action="#{request.contextPath}/view/main/j_spring_security_check"
+			method="post">
+			<p>
+				<p:messages />
+				<h:panelGroup
+					rendered="#{not empty externalContext.sessionMap['SPRING_SECURITY_LAST_EXCEPTION']}">
+
+					<span class="rf-msg "> <span class="rf-msg-err"> <span
+							class="rf-msg-det">#{resourceBundle['login.invalidLogin']}</span>
+					</span> </span>
+				</h:panelGroup>
+				<br />
+				<h:outputText value="#{resourceBundle['login.username']}:" />
+				<br /> <input type="text" name="j_username"
+					value="#{externalContext.sessionMap['SPRING_SECURITY_LAST_USERNAME']}" />
+			</p>
+			<p>
+				<h:outputText value="#{resourceBundle['login.password']}:" />
+				<br /> <input type="password" name="j_password" />
+			</p>
+			<p>
+				<input name="submit" type="submit"
+					value="#{resourceBundle['login.login']}" />
+			</p>
+		</form>
+	</p:panel>
+</h:body>
+</html>

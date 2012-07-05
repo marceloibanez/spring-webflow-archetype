@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/xhtml; charset=UTF-8" />
+	<title><ui:insert name="title" /></title>
+	<script type="text/javascript">
+		
+	</script>
+	<link rel="stylesheet"
+		href="${request.contextPath}/resources/css/application.css"
+		type="text/css" />
+	<ui:insert name="head" />
+</h:head>
+
+<h:body>
+	<h:form>
+		<table width="100%"
+			style="background-image: url('#{request.contextPath}/resources/images/background.jpg'); background-repeat: no-repeat;">
+			<tr>
+				<td width="17%" rowspan="2" align="center">
+					<!-- <h:graphicImage
+						value="/resources/images/client_logo.jpg" />
+					 -->	
+				</td>
+				<td align="left" width="43%" valign="bottom"
+					style="padding-bottom: 7px"></td>
+			</tr>
+			<tr valign="bottom">
+				<td colspan="2" width="90%"><ui:include src="menu.xhtml" /></td>
+				<td align="right" width="10%">	
+					<h:outputLink value="#{request.contextPath}/view/main/logout">
+						<h:graphicImage value="/resources/images/logout.png"
+							title="Logout" />
+					</h:outputLink>
+				</td>
+			</tr>
+		</table>
+	</h:form>
+
+	<table width="100%">
+		<tr>
+			<td></td>
+		</tr>
+		<tr>
+			<td>
+				<table width="100%">
+					<tr>
+						<td><p:panel>
+								
+								<f:facet name="header">
+									<span style="font-size:12px;"><ui:insert name="title" /></span>
+									 
+									<p:ajaxStatus>
+										<f:facet name="start">
+											<h:graphicImage value="/resources/images/ai.gif"
+												style="height:12px;width:12px;align:right;" />
+										</f:facet>
+										<f:facet name="complete">
+											 <h:outputText value="" />  
+										</f:facet>
+									</p:ajaxStatus>
+									 
+								</f:facet>
+															
+								<p:messages autoUpdate="true" globalOnly="true"/>
+								
+								<ui:insert name="body">Body</ui:insert>
+							</p:panel>
+						</td>
+					</tr>
+				</table></td>
+		</tr>
+	</table>
+</h:body>
+</html>

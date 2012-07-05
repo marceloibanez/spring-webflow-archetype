@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="title">#{resourceBundle['role.admin.title']}</ui:define>
+
+	<ui:define name="body">
+		<h:form id="editRoleForm">
+			<h:panelGrid columns="3" width="60%">
+				<h:outputText value="#{resourceBundle['name']}:" />
+				<p:inputText value="#{roleModel.name}" id="name" label="#{resourceBundle['name']}" size="60">
+					<f:validateRequired />
+					<f:validateLength maximum="255" />					
+				</p:inputText>
+				
+				<p:message for="name" />
+
+				<h:outputText value="#{resourceBundle['description']}:" />
+				<p:inputTextarea value="#{roleModel.description}" id="description" label="#{resourceBundle['description']}" rows="3" cols="60">
+					<f:validateLength maximum="255" />
+				</p:inputTextarea>
+				<p:message for="description" />
+			</h:panelGrid>
+
+			<br />
+			<br />
+
+			<p:dataTable var="permission"
+				value="#{roleModel.permissionsDataModel}" paginator="true"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15">
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="#{resourceBundle['role.admin.permissions']}" />
+					</f:facet>
+					<h:outputText value="#{permission.wrapped.description}" />
+				</p:column>
+
+				<p:column>
+					<h:selectBooleanCheckbox value="#{permission.selected}">
+						<f:ajax />
+					</h:selectBooleanCheckbox>
+				</p:column>
+			</p:dataTable>
+
+			<br />
+			<p:commandButton value="#{resourceBundle['accept']}" update="@form"
+				action="confirm"/>
+
+			<p:commandButton value="#{resourceBundle['cancel']}"
+				action="cancel" immediate="true"/>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

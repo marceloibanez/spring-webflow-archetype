@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="title">#{resourceBundle['role.search.title']}</ui:define>
+
+	<ui:define name="body">
+		<h:form id="searchRoleForm">
+			<h:panelGrid columns="5" width="60%">
+				<h:outputText value="#{resourceBundle['name']}:" />
+				<h:inputText value="#{roleModel.filter.name}" size="60"
+					id="nameFilter" />
+				<h:message for="nameFilter" />
+				<p:commandButton value="#{resourceBundle['search']}" action="search"
+					update="roleListTable" />
+				<p:commandButton value="#{resourceBundle['new']}" action="new" />
+			</h:panelGrid>
+
+			<br />
+
+			<p:dataTable id="roleListTable" var="role" value="#{roleModel.roleList}"
+				paginator="true"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15"
+				emptyMessage="#{resourceBundle['search.message.dataNotFound']}"
+				paginatorAlwaysVisible="false">
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="#{resourceBundle['name']}" />
+					</f:facet>
+					<h:outputText value="#{role.name}" />
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="#{resourceBundle['description']}" />
+					</f:facet>
+					<h:outputText value="#{role.description}" />
+				</p:column>
+				<p:column>
+					<p:commandLink action="edit" title="#{resourceBundle['edit']}">
+						<h:graphicImage value="/resources/images/edit.gif" />
+						<f:setPropertyActionListener target="#{roleModel.editedRole}"
+							value="#{role}" />
+					</p:commandLink>
+					<p:commandLink execute="@this" render="@none"
+						oncomplete="confirmation.show()"
+						title="#{resourceBundle['delete']}">
+						<h:graphicImage value="/resources/images/delete.gif" />
+						<f:setPropertyActionListener target="#{roleModel.editedRole}"
+							value="#{role}" />
+					</p:commandLink>
+				</p:column>
+			</p:dataTable>
+
+			<p:confirmDialog id="confirmDialog"
+				message="#{resourceBundle['role.delete.confirm']}"
+				header="#{resourceBundle['confirm']}" severity="alert"
+				widgetVar="confirmation">
+
+				<p:commandButton id="confirm" value="#{resourceBundle['delete']}"
+					oncomplete="confirmation.hide()" action="delete"
+					update="roleListTable" />
+				<p:commandButton id="decline" value="#{resourceBundle['cancel']}"
+					onclick="confirmation.hide()" type="button" />
+			</p:confirmDialog>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

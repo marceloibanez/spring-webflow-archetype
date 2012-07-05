@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="title">#{resourceBundle['user.search.title']}</ui:define>
+	
+	<ui:define name="body">
+		<h:form id="searchUserForm">	
+				<h:panelGrid columns="5" width="60%">
+				<h:outputText value="#{resourceBundle['name']}:" />
+				<p:inputText value="#{userModel.filter.name}" size="60"
+					id="nameFilter" />
+				<p:message for="nameFilter" />
+				<p:commandButton value="#{resourceBundle['search']}"
+					action="search" update="userListTable" />
+				<p:commandButton value="#{resourceBundle['new']}" action="new" />
+			</h:panelGrid>
+
+			<br />
+
+			<p:dataTable id="userListTable"
+				var="user" value="#{userModel.userList}"
+				paginator="true"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15"
+				emptyMessage="#{resourceBundle['search.message.dataNotFound']}"
+				paginatorAlwaysVisible="false">
+	
+				<p:column>
+					<f:facet name="header">
+						<h:outputText
+								value="#{resourceBundle['user.admin.username']}" />
+					</f:facet>
+					<h:outputText value="#{user.username}" />
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						<h:outputText
+							value="#{resourceBundle['user.admin.completeName']}" />
+					</f:facet>
+					<h:outputText value="#{user.completeName}" />
+				</p:column>
+				<p:column>
+					<p:commandLink action="edit" title="#{resourceBundle['edit']}">
+						<h:graphicImage value="/resources/images/edit.gif" />
+						<f:setPropertyActionListener target="#{userModel.editedUser}"
+							value="#{user}" />
+					</p:commandLink>
+					 						
+					<p:commandLink action="prepareResetPassword"
+						title="#{resourceBundle['user.admin.resetPassword']}"
+						oncomplete="resetPasswordDialog.show();"
+						render="resetPasswordGrid">
+						<h:graphicImage value="/resources/images/password.png" />
+						<f:setPropertyActionListener target="#{userModel.editedUser}"
+							value="#{user}" />
+					</p:commandLink>
+					
+					<p:commandLink execute="@this" render="@none"
+						oncomplete="confirmation.show();"
+						title="#{resourceBundle['delete']}">
+						<h:graphicImage value="/resources/images/delete.gif" />
+						<f:setPropertyActionListener target="#{userModel.editedUser}"
+							value="#{user}" />
+					</p:commandLink>
+					
+				</p:column>
+			</p:dataTable>
+
+			<p:confirmDialog id="confirmDialog"
+				message="#{resourceBundle['user.delete.confirm']}"
+				header="#{resourceBundle['confirm']}" severity="alert"
+				widgetVar="confirmation">
+
+				<p:commandButton id="confirm" value="#{resourceBundle['delete']}"
+					oncomplete="confirmation.hide()" action="delete"
+					update="userListTable" />
+				<p:commandButton id="decline" value="#{resourceBundle['cancel']}"
+					onclick="confirmation.hide()" type="button" />
+			</p:confirmDialog>			
+		</h:form>
+
+		<ui:include src="resetPassword.xhtml"/>
+		
+	</ui:define>
+</ui:composition>
+</html>

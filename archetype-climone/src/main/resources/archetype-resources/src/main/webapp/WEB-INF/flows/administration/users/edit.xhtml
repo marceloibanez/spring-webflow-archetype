@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="title">#{resourceBundle['user.admin.title']}</ui:define>
+
+	<ui:define name="body">
+		<h:form id="editUserForm">
+			<h:panelGrid columns="3" width="60%">
+
+				<h:outputText value="#{resourceBundle['user.admin.username']}:" />
+				<p:inputText value="#{userModel.username}" id="username"
+					label="#{resourceBundle['user.admin.username']}" size="60"
+					autocomplete="off">
+					<f:validateRequired />
+					<f:validateLength maximum="10" />
+				</p:inputText>
+				<p:message for="username" />
+
+				<h:outputText value="#{resourceBundle['user.admin.password']}:"
+					rendered="#{userModel.newMode}" />
+				<p:password value="#{userModel.password}" id="password"
+					label="#{resourceBundle['user.admin.password']}" size="60"
+					autocomplete="off" rendered="#{userModel.newMode}">
+					<f:validateRequired />
+					<f:validateLength maximum="255" />
+				</p:password>
+				<p:message for="password" rendered="#{userModel.newMode}" />
+
+				<h:outputText value="#{resourceBundle['user.admin.firstName']}:" />
+				<p:inputText value="#{userModel.firstName}" id="firstName"
+					label="#{resourceBundle['user.admin.firstName']}" size="60">
+					<f:validateRequired />
+					<f:validateLength maximum="255" />
+				</p:inputText>
+				<p:message for="firstName" />
+
+				<h:outputText value="#{resourceBundle['user.admin.lastName']}:" />
+				<p:inputText value="#{userModel.lastName}" id="lastName"
+					label="#{resourceBundle['user.admin.lastName']}" size="60">
+					<f:validateRequired />
+					<f:validateLength maximum="255" />
+				</p:inputText>
+				<p:message for="lastName" />
+
+				<h:outputText value="#{resourceBundle['user.admin.email']}:" />
+				<p:inputText value="#{userModel.email}" id="email"
+					label="#{resourceBundle['user.admin.email']}" size="60"
+					validatorMessage="#{resourceBundle['user.admin.email.invalid']}">
+					<f:validateRequired />
+					<f:validateLength maximum="255" />
+					<f:validateRegex
+						pattern="^(([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([;.](([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+)*$" />
+				</p:inputText>
+				<p:message for="email" />
+
+			</h:panelGrid>
+
+			<br />
+			<br />
+
+			<p:dataTable var="role" value="#{userModel.rolesDataModel}">
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="#{resourceBundle['user.admin.roles']}" />
+					</f:facet>
+					<h:outputText value="#{role.wrapped.name}" />
+				</p:column>
+
+				<p:column width="10">
+					<h:selectBooleanCheckbox value="#{role.selected}">
+						<p:ajax />
+					</h:selectBooleanCheckbox>
+				</p:column>
+			</p:dataTable>
+
+			<br />
+
+			<p:commandButton value="#{resourceBundle['accept']}" action="confirm"
+				update="@form" />
+
+			<p:commandButton value="#{resourceBundle['cancel']}" action="cancel"
+				immediate="true" />
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>
