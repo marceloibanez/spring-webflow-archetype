@@ -40,7 +40,7 @@
 	<bean id="daoAuthenticationProvider"
 		class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
 		<property name="userDetailsService">
-			<bean class="org.opensource.climone.security.AppUserDetailsService" />
+			<bean class="${package}.security.AppUserDetailsService" />
 		</property>
 		<property name="saltSource" ref="saltSource" />
 		<property name="passwordEncoder" ref="passwordEncoder" />
